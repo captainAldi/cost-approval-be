@@ -58,6 +58,7 @@ class AuthController extends Controller
             $createDataUser->provider_id        = $providerUser->getId();
             $createDataUser->email_verified_at  = date("Y-m-d H:i:s");
             $createDataUser->api_token          = $providerUser->token;
+            $createDataUser->email              = $providerUser->getEmail();
 
             $createDataUser->save();
 

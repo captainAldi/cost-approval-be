@@ -19,4 +19,16 @@ class FilesController extends Controller
 
         return $fileInv;
     }
+
+    public function showBP($namaFile, $tipeFile)
+    {
+
+        $cariBP = storage_path('app/data-aplikasi/bukti-pembayaran/' . $namaFile . '.' .$tipeFile);
+            
+        $isiResponse = response()->download($cariBP);
+
+        $fileBP = !empty($cariBP) ? $isiResponse : null;
+
+        return $fileBP;
+    }
 }

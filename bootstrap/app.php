@@ -83,6 +83,8 @@ $app->middleware([
 $app->routeMiddleware([
     'login' => App\Http\Middleware\LoginMiddleware::class,
     'admin' => App\Http\Middleware\AdminMiddleware::class,
+    'approver' => App\Http\Middleware\ApproverMiddleware::class,
+    'finance' => App\Http\Middleware\FinanceMiddleware::class,
 ]);
 
 /*

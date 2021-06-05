@@ -30,7 +30,12 @@ $router->group(['prefix' => 'api/v1/' ], function() use ($router) {
 
 
     // Logged In and Admin
-     $router->group(['middleware' => ['login', 'admin'] ], function() use ($router) {
+     $router->group(['middleware' => ['login', 'finance'] ], function() use ($router) {
+        $router->patch("/bill/pay/{id}", "BillController@payPengajuan");   
+    });
+
+    // Logged In and Approver
+     $router->group(['middleware' => ['login', 'approver'] ], function() use ($router) {
         $router->patch("/bill/approve/{id}", "BillController@approvePengajuan");   
     });
 
@@ -39,7 +44,10 @@ $router->group(['prefix' => 'api/v1/' ], function() use ($router) {
         $router->post("/bill/add", "BillController@createPengajuan");  
         $router->get("/bill/get/waiting", "BillController@getPengajuan");   
         $router->get("/bill/get/approved", "BillController@getApproved");   
+        $router->get("/bill/get/paid", "BillController@getPaid");   
+
         $router->get("/files/invoice-tagihan/{namaFile}/{tipeFile}", "FilesController@showInvBill");
+        $router->get("/files/bukti-pembayaran/{namaFile}/{tipeFile}", "FilesController@showBP");
 
         
     });

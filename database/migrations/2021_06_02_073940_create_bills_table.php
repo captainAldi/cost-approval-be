@@ -21,7 +21,8 @@ class CreateBillsTable extends Migration
             $table->string('status');
             $table->string('bu');
             $table->integer('pengaju_id')->unsigned()->nullable();
-            $table->integer('approvers_id')->unsigned()->nullable();
+            $table->string('file_bukti_pembayaran')->nullable();
+            $table->integer('finance_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

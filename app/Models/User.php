@@ -40,6 +40,10 @@ class User extends Model
         return $this->hasMany('App\Models\Bill', 'pengaju_id', 'id');
     }
 
+    public function finances() {
+        return $this->hasMany('App\Models\Bill', 'finance_id', 'id');
+    }
+
     public function approvers() {
         return $this->hasMany('App\Models\Bill', 'pengaju_id', 'id');
     }

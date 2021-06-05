@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class Bill extends Model
+class BillApprover extends Model
 {
 
     /**
@@ -19,12 +19,8 @@ class Bill extends Model
         return $this->belongsTo('App\Models\User', 'pengaju_id', 'id');
     }
 
-    public function finances() {
-        return $this->belongsTo('App\Models\User', 'finance_id', 'id');
-    }
-
     public function approvers() {
-        return $this->hasMany('App\Models\BillApprover', 'bill_id', 'id');
+        return $this->belongsTo('App\Models\BillApprover', 'bill_id', 'id');
     }
 
     public function getCreatedAtAttribute($date)

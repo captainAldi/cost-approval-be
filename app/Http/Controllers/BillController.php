@@ -22,14 +22,17 @@ class BillController extends Controller
             'deskripsi.required'   => 'Masukkan Deskripsi Tagihan !',
             'bu.required'   => 'Pilih Business Unit !',
             'file_inv.required'   => 'Upload File Invoice !',
+            'approver_email.required'   => 'Masukkan Approver !',
+            'approver_email.*.email'   => 'Masukkan Email dengan Benar !',
         ];
         
         //Validasi Data
         $validasiData = $this->validate($request, [
-            'judul'         => 'required',
-            'deskripsi'     => 'required',
-            'file_inv'      => 'required',
-            'bu'            => 'required',
+            'judul'             => 'required',
+            'deskripsi'         => 'required',
+            'file_inv'          => 'required',
+            'bu'                => 'required',
+            'approver_email.*'  => 'required|email'
         ], $messages);
 
          // Get API Key

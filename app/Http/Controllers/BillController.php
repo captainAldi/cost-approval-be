@@ -123,7 +123,6 @@ class BillController extends Controller
 
         // Tagihan Approver
         $dataBillApprover = BillApprover::where('bill_id', $id)->first();
-        $collectionBillApprover = BillApprover::where('bill_id', $id)->get();
 
         if (!$dataBill || !$dataBillApprover) {
             return response()->json([
@@ -146,6 +145,7 @@ class BillController extends Controller
         // -- Data Bill --
 
         // Cek isWaiting All Approver
+        $collectionBillApprover = BillApprover::where('bill_id', $id)->get();
         $isWaitingBillApprover = $collectionBillApprover->contains('status', 'Waiting');
 
         if (!$isWaitingBillApprover) {

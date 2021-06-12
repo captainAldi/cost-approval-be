@@ -63,6 +63,7 @@ $app->configure('app');
 $app->configure('database');
 $app->configure('filesystems');
 $app->configure('services');
+$app->configure('telegram');
 
 
 /*
@@ -103,6 +104,8 @@ $app->routeMiddleware([
 // $app->register(App\Providers\EventServiceProvider::class);
 
 $app->register(Laravel\Socialite\SocialiteServiceProvider::class);
+$app->register(Illuminate\Redis\RedisServiceProvider::class); 
+
 
 /*
 |--------------------------------------------------------------------------

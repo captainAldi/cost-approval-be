@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('role');
             $table->string('provider_name');
             $table->string('provider_id');
+            $table->string('chat_id_telegram')->nullable();
             $table->longText('photo')->nullable();
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();

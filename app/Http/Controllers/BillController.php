@@ -10,6 +10,12 @@ use App\Models\User;
 
 use DB;
 
+use Telegram\Bot\Api;
+use Illuminate\Support\Facades\Redis;
+use App\Jobs\SendChatJob;
+use Ramsey\Uuid\Uuid;
+use Telegram\Bot\FileUpload\InputFile;
+
 class BillController extends Controller
 {
     
@@ -102,8 +108,37 @@ class BillController extends Controller
             $billApprover->bill_id  = $dataBill->id;
             $billApprover->email = $value;
             $billApprover->status = 'Waiting';
+            $billApprover->remember_token = Uuid::uuid4()->toString();
 
             $billApprover->save();
+
+        }
+
+        // Get User Sebagai Approver
+        $dataUserAsApprovers = DB::table('users')
+                                ->whereIn('email', $approver_email)
+                                ->get();
+        
+        // Send Notifikasi ke Telegram
+         foreach ($dataUserAsApprovers as $key) {
+            
+            $billApproverNotif = BillApprover::where('email', $key->email)->where('bill_id', $dataBill->id)->first();
+
+            $chatID         = $key->chat_id_telegram;
+            $judul          = $dataBill->judul;
+            $pembuka        = $key->name;
+            $deskripsi      = $dataBill->deskripsi;
+            $fileInv        = $dataBill->file_inv;
+            $approveLink    = env('VUE_APP_URL').'/otr/bill/approve/'.$billApproverNotif->remember_token;
+
+            dispatch(new SendChatJob(
+                $chatID, 
+                $judul, 
+                $pembuka, 
+                $deskripsi, 
+                $fileInv, 
+                $approveLink)
+            );
 
         }
         
@@ -146,6 +181,54 @@ class BillController extends Controller
 
         // Cek isWaiting All Approver
         $collectionBillApprover = BillApprover::where('bill_id', $id)->get();
+        $isWaitingBillApprover = $collectionBillApprover->contains('status', 'Waiting');
+
+        if (!$isWaitingBillApprover) {
+            // Simpan Bill
+            $dataBill->status = "Approved";
+            $dataBill->save();
+        }
+
+        return response()->json([
+            'message' => 'Tagihan di Approve !',
+            'data'  => $dataBill
+        ], 200);
+
+    }
+
+    public function approvePengajuanWithToken(Request $request, $remember_token)
+    {
+
+        // Tagihan Approver
+        $dataBillApprover = BillApprover::where('remember_token', $remember_token)->first();
+
+        if (!$dataBillApprover) {
+            return response()->json([
+                'message' => 'Pengajuan Tidak Ada !',
+            ], 403);
+        }
+
+        // Tagihan
+        $dataBill = Bill::where('id', $dataBillApprover->bill_id)->where('status', 'Waiting')->first();
+
+        if (!$dataBill) {
+            return response()->json([
+                'message' => 'Pengajuan Tidak Ada !',
+            ], 403);
+        }
+
+
+        // -- Data Bill Approver --
+        $specificBillApprover = BillApprover::where('remember_token', $remember_token)->where('email', $dataBillApprover->email)->first();
+        $specificBillApprover->status = 'Approved';
+        $specificBillApprover->remember_token = null;
+
+        $specificBillApprover->save();
+
+        // -- Data Bill --
+
+        // Cek isWaiting All Approver
+        $collectionBillApprover = BillApprover::where('bill_id', $dataBillApprover->bill_id)->get();
         $isWaitingBillApprover = $collectionBillApprover->contains('status', 'Waiting');
 
         if (!$isWaitingBillApprover) {
@@ -326,6 +409,19 @@ class BillController extends Controller
             'data'  => $dataBill
         ], 200);
 
+    }
+
+    public function getApproversName() 
+    {
+        $data = DB::table('users')
+                    ->select('email')
+                    ->where('role', 'approver')
+                    ->get();
+
+        return response()->json([
+            'messsage' => 'Data berhasil di ambil !',
+            'data'  => $data
+        ], 200);
     }
 
 }

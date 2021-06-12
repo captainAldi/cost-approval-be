@@ -18,6 +18,7 @@ class CreateBillApproversTable extends Migration
             $table->integer('bill_id')->unsigned()->nullable();
             $table->string('email');
             $table->string('status');
+            $table->string('remember_token')->nullable();
             $table->timestamps();
         });
     }

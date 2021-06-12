@@ -6,10 +6,14 @@
     "type": "project",
     "require": {
         "php": "^7.3|^8.0",
+        "illuminate/redis": "^8.46",
+        "irazasyed/telegram-bot-sdk": "^3.4",
         "laravel/lumen-framework": "^8.0",
         "laravel/socialite": "^5.2",
         "league/flysystem": "^1.1",
-        "nesbot/carbon": "^2.48"
+        "nesbot/carbon": "^2.48",
+        "predis/predis": "^1.1",
+        "ramsey/uuid": "^4.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

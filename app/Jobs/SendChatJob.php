@@ -69,7 +69,7 @@ class SendChatJob extends Job
             ]);
 
             $response2 = $telegram->sendDocument([
-                'chat_id' => env('TELEGRAM_CHAT_ID'), 
+                'chat_id' => $chat_id, 
                 'document' => InputFile::create($chat_fileInv, $this->fileInv),
                 'caption'  => 'File Invoice',
                 'reply_markup'  => $dataInlineKB

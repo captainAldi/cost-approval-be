@@ -45,6 +45,8 @@ class SendNotifCommand extends Command
             $pembuka        = $dataUser->name;
             $deskripsi      = $dataWaitingBill->deskripsi;
             $fileInv        = $dataWaitingBill->file_inv;
+            $bu             = $dataWaitingBill->bu;
+            $bi             = $dataWaitingBill->business_initiative;
             $approveLink    = env('VUE_APP_URL').'/otr/bill/approve/'.$key->remember_token;
 
             dispatch(new SendChatJob(
@@ -53,7 +55,9 @@ class SendNotifCommand extends Command
                 $pembuka, 
                 $deskripsi, 
                 $fileInv, 
-                $approveLink)
+                $approveLink,
+                $bu,
+                $bi)
             );
 
         }

@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
     {
         
         // $schedule->command('send:notif')->everyMinute();
-        $schedule->command('send:notif')->dailyAt('13:00');
+        $schedule->command('send:notif')->dailyAt('10:00');
 
     }
 }

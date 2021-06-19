@@ -30,6 +30,8 @@ class BillController extends Controller
             'file_inv.required'   => 'Upload File Invoice !',
             'approver_email.required'   => 'Masukkan Approver !',
             'approver_email.*.email'   => 'Masukkan Email dengan Benar !',
+            'business_initiative.required' => 'Masukkan Business Initiative !'
+
         ];
         
         //Validasi Data
@@ -38,7 +40,8 @@ class BillController extends Controller
             'deskripsi'         => 'required',
             'file_inv'          => 'required',
             'bu'                => 'required',
-            'approver_email.*'  => 'required|email'
+            'approver_email.*'  => 'required|email',
+            'business_initiative' => 'required'
         ], $messages);
 
          // Get API Key
@@ -52,6 +55,7 @@ class BillController extends Controller
         $deskripsi = $request->input('deskripsi');
         $file_inv = $request->input('file_inv');
         $bu = $request->input('bu');
+        $business_initiative = $request->input('business_initiative');
         $status = 'Waiting';
         $pengaju_id = $user->id;
 
@@ -60,6 +64,7 @@ class BillController extends Controller
         $dataBill->judul = $judul;
         $dataBill->deskripsi = $deskripsi;
         $dataBill->bu = $bu;
+        $dataBill->business_initiative = $business_initiative;
         $dataBill->status = $status;
         $dataBill->pengaju_id = $pengaju_id;
 
@@ -129,6 +134,8 @@ class BillController extends Controller
             $pembuka        = $key->name;
             $deskripsi      = $dataBill->deskripsi;
             $fileInv        = $dataBill->file_inv;
+            $bu             = $dataBill->bu;
+            $bi             = $dataBill->business_initiative;
             $approveLink    = env('VUE_APP_URL').'/otr/bill/approve/'.$billApproverNotif->remember_token;
 
             dispatch(new SendChatJob(
@@ -137,7 +144,9 @@ class BillController extends Controller
                 $pembuka, 
                 $deskripsi, 
                 $fileInv, 
-                $approveLink)
+                $approveLink,
+                $bu,
+                $bi)
             );
 
         }

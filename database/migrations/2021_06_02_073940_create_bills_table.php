@@ -20,6 +20,7 @@ class CreateBillsTable extends Migration
             $table->string('file_inv');
             $table->string('status');
             $table->string('bu');
+            $table->string('business_initiative');
             $table->integer('pengaju_id')->unsigned()->nullable();
             $table->string('file_bukti_pembayaran')->nullable();
             $table->integer('finance_id')->unsigned()->nullable();

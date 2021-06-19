@@ -17,13 +17,13 @@ class SendChatJob extends Job
     use InteractsWithQueue, Queueable, SerializesModels;
 
     // public $chatID;
-    public $chatID, $judul, $pembuka, $deskripsi, $fileInv, $approveLink;
+    public $chatID, $judul, $pembuka, $deskripsi, $fileInv, $approveLink, $bu, $bi;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($chatID, $judul, $pembuka, $deskripsi, $fileInv, $approveLink)
+    public function __construct($chatID, $judul, $pembuka, $deskripsi, $fileInv, $approveLink, $bu, $bi)
     {
         $this->chatID         = $chatID;
         $this->judul          = $judul;
@@ -31,6 +31,8 @@ class SendChatJob extends Job
         $this->deskripsi      = $deskripsi;
         $this->fileInv        = $fileInv;
         $this->approveLink    = $approveLink;
+        $this->bu             = $bu;
+        $this->bi             = $bi;
     }
 
     /**
@@ -48,13 +50,15 @@ class SendChatJob extends Job
 
             $chat_judul        = '<b>'.$this->judul.'</b>';
             $chat_pembuka      = 'Halo '.$this->pembuka.' Ada Tagihan yang Harus di Review nih !';
+            $chat_bu           = '<b>Business Unit: </b>'.$this->bu;
+            $chat_bi           = '<b>Business Initiative: </b>'.$this->bi;
             $chat_deskripsi    = $this->deskripsi;
             $chat_id           = $this->chatID;
 
             // Send First Chat
             $response = $telegram->sendMessage([
                 'chat_id' => $chat_id, 
-                'text' => $chat_judul . "\n\n" . $chat_pembuka . "\n\n" . $chat_deskripsi,
+                'text' => $chat_judul . "\n\n" . $chat_pembuka . "\n\n" . $chat_bu . "\n" . $chat_bi . "\n\n" . $chat_deskripsi,
                 'parse_mode' => 'HTML',
             ]);
 

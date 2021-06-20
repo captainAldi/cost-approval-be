@@ -9,6 +9,7 @@ use App\Models\BillApprover;
 use App\Models\User;
 
 use DB;
+use Carbon\Carbon;
 
 use Telegram\Bot\Api;
 use Illuminate\Support\Facades\Redis;
@@ -30,7 +31,11 @@ class BillController extends Controller
             'file_inv.required'   => 'Upload File Invoice !',
             'approver_email.required'   => 'Masukkan Approver !',
             'approver_email.*.email'   => 'Masukkan Email dengan Benar !',
-            'business_initiative.required' => 'Masukkan Business Initiative !'
+            'business_initiative.required' => 'Masukkan Business Initiative !',
+            'tanggal_jatuh_tempo.required' => 'Masukkan Tanggal Jatuh Tempo !',
+            'jumlah_tagihan.required' => 'Masukkan Jumlah Tagihan !',
+            'transaksi_berulang.required' => 'Masukkan Status Transaksi Berulang/Tidak !',
+            'nama_pt.required' => 'Masukkan Nama PT !',
 
         ];
         
@@ -41,7 +46,11 @@ class BillController extends Controller
             'file_inv'          => 'required',
             'bu'                => 'required',
             'approver_email.*'  => 'required|email',
-            'business_initiative' => 'required'
+            'business_initiative' => 'required',
+            'tanggal_jatuh_tempo' => 'required',
+            'jumlah_tagihan' => 'required',
+            'transaksi_berulang' => 'required',
+            'nama_pt' => 'required',
         ], $messages);
 
          // Get API Key
@@ -56,8 +65,13 @@ class BillController extends Controller
         $file_inv = $request->input('file_inv');
         $bu = $request->input('bu');
         $business_initiative = $request->input('business_initiative');
+        $tanggal_jatuh_tempo = $request->input('tanggal_jatuh_tempo');
+        $jumlah_tagihan = (double)$request->input('jumlah_tagihan');
+        $transaksi_berulang = $request->input('transaksi_berulang');
+        $nama_pt = $request->input('nama_pt');
         $status = 'Waiting';
         $pengaju_id = $user->id;
+        $tanggal_transaksi = null;
 
         // Simpan 
         $dataBill = new Bill();
@@ -65,8 +79,13 @@ class BillController extends Controller
         $dataBill->deskripsi = $deskripsi;
         $dataBill->bu = $bu;
         $dataBill->business_initiative = $business_initiative;
+        $dataBill->tanggal_jatuh_tempo = $tanggal_jatuh_tempo;
+        $dataBill->jumlah_tagihan = $jumlah_tagihan;
+        $dataBill->transaksi_berulang = $transaksi_berulang;
+        $dataBill->nama_pt = $nama_pt;
         $dataBill->status = $status;
         $dataBill->pengaju_id = $pengaju_id;
+        $dataBill->tanggal_transaksi = $tanggal_transaksi;
 
         // Untuk File
             // Nama Asli File
@@ -136,6 +155,10 @@ class BillController extends Controller
             $fileInv        = $dataBill->file_inv;
             $bu             = $dataBill->bu;
             $bi             = $dataBill->business_initiative;
+            $tgl_jatuh_tempo = Carbon::parse($dataBill->tanggal_jatuh_tempo)->format('d-F-Y'); 
+            $jumlah_tagihan  = number_format($dataBill->jumlah_tagihan,2,',','.');
+            $transaksi_berulang = $dataBill->transaksi_berulang;
+            $nama_pt         = $dataBill->nama_pt;
             $approveLink    = env('VUE_APP_URL').'/otr/bill/approve/'.$billApproverNotif->remember_token;
 
             dispatch(new SendChatJob(
@@ -146,7 +169,11 @@ class BillController extends Controller
                 $fileInv, 
                 $approveLink,
                 $bu,
-                $bi)
+                $bi,
+                $tgl_jatuh_tempo,
+                $jumlah_tagihan,
+                $transaksi_berulang,
+                $nama_pt)
             );
 
         }
@@ -302,6 +329,7 @@ class BillController extends Controller
 
         $dataBill->status = 'Paid';
         $dataBill->finance_id = $user->id;
+        $dataBill->tanggal_transaksi = $request->input('tanggal_transaksi');
 
         $dataBill->save();
 

@@ -8,9 +8,11 @@ use App\Jobs\SendChatJob;
 use Ramsey\Uuid\Uuid;
 
 use DB;
+use Carbon\Carbon;
 use App\Models\BillApprover;
 use App\Models\Bill;
 use App\Models\User;
+
 
 class SendNotifCommand extends Command
 {
@@ -47,6 +49,10 @@ class SendNotifCommand extends Command
             $fileInv        = $dataWaitingBill->file_inv;
             $bu             = $dataWaitingBill->bu;
             $bi             = $dataWaitingBill->business_initiative;
+            $tgl_jatuh_tempo = Carbon::parse($dataWaitingBill->tanggal_jatuh_tempo)->format('d-F-Y'); 
+            $jumlah_tagihan  = number_format($dataWaitingBill->jumlah_tagihan,2,',','.');
+            $transaksi_berulang = $dataWaitingBill->transaksi_berulang;
+            $nama_pt         = $dataWaitingBill->nama_pt;
             $approveLink    = env('VUE_APP_URL').'/otr/bill/approve/'.$key->remember_token;
 
             dispatch(new SendChatJob(
@@ -57,7 +63,11 @@ class SendNotifCommand extends Command
                 $fileInv, 
                 $approveLink,
                 $bu,
-                $bi)
+                $bi,
+                $tgl_jatuh_tempo,
+                $jumlah_tagihan,
+                $transaksi_berulang,
+                $nama_pt)
             );
 
         }

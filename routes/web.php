@@ -44,6 +44,31 @@ $router->get('/telegram', function () use ($router) {
     ], 200);
 });
 
+// tes telegram
+$router->get('/telebaru', function () use ($router) {
+    $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+
+    $response = $telegram->sendMessage([
+                'chat_id' => '-369194234', 
+                'text' => 'ini judul' . "\n\n" .
+                             'ini pembuka' . "\n\n" . 
+                             'ini nama pt' . "\n" . 
+                             'ini bu' . "\n" . 
+                             'ini bi' . "\n" . 
+                             '2021-06-04' . "\n" .
+                             'Yes' . "\n\n" . 
+                             50000 . "\n\n" . 
+                             'ini deskripsi',
+                'parse_mode' => 'HTML',
+            ]);
+
+    return response()->json([
+        'data' => $response
+    ], 200);
+});
+
+
+
 
 // OAuth Google
 

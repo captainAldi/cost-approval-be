@@ -21,9 +21,14 @@ class CreateBillsTable extends Migration
             $table->string('status');
             $table->string('bu');
             $table->string('business_initiative');
+            $table->string('nama_pt');
             $table->integer('pengaju_id')->unsigned()->nullable();
             $table->string('file_bukti_pembayaran')->nullable();
             $table->integer('finance_id')->unsigned()->nullable();
+            $table->date('tanggal_transaksi')->nullable();
+            $table->date('tanggal_jatuh_tempo')->nullable();
+            $table->double('jumlah_tagihan');
+            $table->string('transaksi_berulang')->nullable();
             $table->timestamps();
         });
     }

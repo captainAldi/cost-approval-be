@@ -64,6 +64,14 @@ $app->configure('database');
 $app->configure('filesystems');
 $app->configure('services');
 $app->configure('telegram');
+$app->configure('mail');
+
+$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
+$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
+
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
 
 
 /*
@@ -105,6 +113,7 @@ $app->routeMiddleware([
 
 $app->register(Laravel\Socialite\SocialiteServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class); 
+$app->register(Illuminate\Mail\MailServiceProvider::class);
 
 
 /*

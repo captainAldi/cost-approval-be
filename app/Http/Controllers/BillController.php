@@ -13,7 +13,10 @@ use Carbon\Carbon;
 
 use Telegram\Bot\Api;
 use Illuminate\Support\Facades\Redis;
+
 use App\Jobs\SendChatJob;
+USE App\Jobs\SendEmailCostApproveJob;
+
 use Ramsey\Uuid\Uuid;
 use Telegram\Bot\FileUpload\InputFile;
 
@@ -148,6 +151,8 @@ class BillController extends Controller
             
             $billApproverNotif = BillApprover::where('email', $key->email)->where('bill_id', $dataBill->id)->first();
 
+            $chatEmail      = $key->email;
+
             $chatID         = $key->chat_id_telegram;
             $judul          = $dataBill->judul;
             $pembuka        = $key->name;
@@ -163,6 +168,21 @@ class BillController extends Controller
 
             dispatch(new SendChatJob(
                 $chatID, 
+                $judul, 
+                $pembuka, 
+                $deskripsi, 
+                $fileInv, 
+                $approveLink,
+                $bu,
+                $bi,
+                $tgl_jatuh_tempo,
+                $jumlah_tagihan,
+                $transaksi_berulang,
+                $nama_pt)
+            );
+
+            dispatch(new SendEmailCostApproveJob(
+                $chatEmail, 
                 $judul, 
                 $pembuka, 
                 $deskripsi, 

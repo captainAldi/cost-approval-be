@@ -67,6 +67,7 @@ class CostApproveEmail extends Mailable
     {
       
         return $this->view('emails.cost.approve')
+                    ->subject($this->judul)
                     ->attach(storage_path('app/data-aplikasi/file-inv/' . $this->fileInv));
     }
 }
